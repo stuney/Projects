@@ -1,0 +1,134 @@
+import pandas as pd
+from sklearn import linear_model
+
+
+def calculate_bmi(height, weight):
+    height_cm = float(height) * 0.01
+    height_cm_squared = float(height_cm)**2
+    bmi = float(weight)/height_cm_squared
+    if bmi > 25:
+        print ("Overweight BMI")
+    else :
+        print ("Normal BMI")
+    return bmi
+
+def calculate_bmr(height, weight, age, gender):
+    if gender == 1:
+        bmr = 66 + (13.7 * float(weight)) + (5 * float(height)) - (6.8 *float(age))
+    elif gender == 0:
+        bmr = 655 + (float(weight)*9.6) + (float(height)*1.8)  - (4.7*float(age))
+    return bmr
+
+def calculate_tdee(bmr, activity_level):
+    multiplier = {'A': 1.2, 'B': 1.375, 'C': 1.55, 'D': 1.725, 'E': 1.9}
+    return bmr * multiplier[activity_level]
+
+def calculate_total_calories(menu, calories):
+    return calories[menu['breakfast']] + calories[menu['lunch']] + calories[menu['dinner']]
+
+
+
+    
+#print "Welcome to fitmeals! press any key to continue "
+
+#data = raw_input()
+weight =raw_input("Enter your weight in kgs")
+height = raw_input("Enter your height in cms")
+age = raw_input("How old are you?")      
+
+
+print ("Your BMI is %s" %calculate_bmi(height, weight));
+
+gender = raw_input("What's your gender? (M/F)")
+if gender=='M':
+    gender = 1
+else:
+    gender = 0
+
+bmr = calculate_bmr(height, weight, age, gender)
+
+print ("your BMR is %s" %bmr)
+
+print('Enter the level of your activity!')
+print '''
+A. Sedentary (little or no exercise, desk job)
+
+B. Lightly Active (light exercise/sports 1-3 days/wk)
+
+C. Moderately Active (moderate exercise/sports 3-5 days/wk)
+
+D. Very Active (hard exercise/sports 6-7 days/wk)
+
+E. Extremely Active (hard daily exercise/sports & physical job or 2X day training, etc.)
+
+Enter A/B/C/D/E.
+'''
+
+activity_level = raw_input()
+
+tdee = calculate_tdee(bmr, activity_level)
+
+print('Your TDEE', calculate_tdee(bmr, activity_level))
+
+print("Thank you")   
+
+user_menu = {
+        'breakfast' : 'EGG_SANDWICH',
+        'lunch' : 'CHICKEN_SKEWERS',
+        'dinner' : 'CHICKEN_SAUSAGE'
+        }
+
+calories = {'EGG_SANDWICH':320, 'CHICKEN_SKEWERS': 317, 'CHICKEN_SAUSAGE': 340}                    
+
+total_consumed_calories = calculate_total_calories(user_menu, calories)
+
+calories_burned_per_kg = 7777
+
+print('How fast do you wanna lose a Kg (in days)')
+
+time_per_kg = float(raw_input())
+
+calories_burned_per_day = calories_burned_per_kg/time_per_kg
+
+calories_to_be_consumed = tdee - calories_burned_per_day
+
+print('You consume {}, you need to consume less than {}'.format(total_consumed_calories, calories_to_be_consumed))
+
+#seg = raw_input("Vegetarian or Non Vegetarian?(V/NV)")
+
+
+def getdata(exp2):
+    health = pd.read_csv('C:\Users\dell\Documents\FitMeals\exp2.csv',sep=",", header = 0 ,
+                     na_values = ':',
+                      names = ["BodyFat","BMI"] )
+                     
+                   
+#print health.describe()
+
+#print health.head()
+
+    X_parameter = []
+    Y_parameter = []
+    for each_BodyFat,each_BMI in zip(health['BodyFat'],health['BMI']):
+        X_parameter.append([float(each_BMI)])
+        Y_parameter.append([float(each_BodyFat)])
+    return X_parameter,Y_parameter
+
+def linear_model_main(X_parameters,Y_parameters,predict_value):
+ 
+    # linear regression object
+    regr = linear_model.LinearRegression()
+    regr.fit(X_parameters, Y_parameters)
+    predict_outcome = regr.predict(predict_value)
+    predictions = {}
+    predictions['intercept'] = regr.intercept_
+    predictions['coefficient'] = regr.coef_
+    predictions['predicted_value'] = predict_outcome
+    return predictions
+
+x,y = getdata('exp2.csv')
+predict_value = calculate_bmi(height, weight)
+result = linear_model_main(x,y,predict_value)
+print "Intercept value " , result['intercept']
+print "coefficient" , result['coefficient']
+print "Predicted value of Bodyfat%: ",result['predicted_value']
