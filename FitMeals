@@ -29,9 +29,9 @@ def calculate_total_calories(menu, calories):
 
 
     
-#print "Welcome to fitmeals! press any key to continue "
 
-#data = raw_input()
+
+
 weight =raw_input("Enter your weight in kgs")
 height = raw_input("Enter your height in cms")
 age = raw_input("How old are you?")      
@@ -96,7 +96,8 @@ print('You consume {}, you need to consume less than {}'.format(total_consumed_c
 
 #seg = raw_input("Vegetarian or Non Vegetarian?(V/NV)")
 
-
+#regressionforpredictingbodyfat%
+#worksbetterifwehavemorechunksofdata
 def getdata(exp2):
     health = pd.read_csv('C:\Users\dell\Documents\FitMeals\exp2.csv',sep=",", header = 0 ,
                      na_values = ':',
@@ -132,3 +133,8 @@ result = linear_model_main(x,y,predict_value)
 print "Intercept value " , result['intercept']
 print "coefficient" , result['coefficient']
 print "Predicted value of Bodyfat%: ",result['predicted_value']
+
+#print("Mean squared error: %.2f"
+     # % np.mean((regr.predict(x) - y) ** 2))
+# Explained variance score: 1 is perfect prediction
+#print('Variance score: %.2f' % regr.score(diabetes_X_test, diabetes_y_test))
